@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Liviahof Optiekiezer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: één kolom op de telefoon, tabbladen bovenaan, vaste totaalbalk onderaan. Kleuren komen van de baksteen van de woningen. */
+:root {
+  --bg: #eceeec;
+  --surface: #ffffff;
+  --surface-2: #f4f5f3;
+  --fg: #1c2321;
+  --muted: #56625d;
+  --line: #d6dcd8;
+  --accent: #9c3f2d;
+  --accent-fg: #ffffff;
+  --accent-text: #9c3f2d;
+  --good: #1b6a43;
+  --good-bg: #d9eee2;
+  --warn: #84560a;
+  --warn-bg: #f6e9c8;
+  --skip: #5d6764;
+  --skip-bg: #e3e6e4;
+  --font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
+  --font-body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131917;
+    --surface: #1c2421;
+    --surface-2: #232d29;
+    --fg: #e7ece9;
+    --muted: #9aa8a2;
+    --line: #2f3b36;
+    --accent: #d8806a;
+    --accent-fg: #1b0f0b;
+    --accent-text: #eba592;
+    --good: #82d3a6;
+    --good-bg: #1d3a2b;
+    --warn: #e8c46c;
+    --warn-bg: #3a3114;
+    --skip: #a4aeaa;
+    --skip-bg: #2a3330;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131917;
+  --surface: #1c2421;
+  --surface-2: #232d29;
+  --fg: #e7ece9;
+  --muted: #9aa8a2;
+  --line: #2f3b36;
+  --accent: #d8806a;
+  --accent-fg: #1b0f0b;
+  --accent-text: #eba592;
+  --good: #82d3a6;
+  --good-bg: #1d3a2b;
+  --warn: #e8c46c;
+  --warn-bg: #3a3114;
+  --skip: #a4aeaa;
+  --skip-bg: #2a3330;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 110px;
+}
+.wrap { max-width: 760px; margin: 0 auto; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.01em; }
+h2 { font-size: 1.35rem; font-weight: 800; margin-bottom: 12px; }
+h3 { font-size: 1.05rem; font-weight: 600; }
+p { margin: 0 0 10px; max-width: 65ch; }
+a { color: var(--accent-text); }
+.eyebrow { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+header.top { padding: 22px 0 14px; display: grid; gap: 6px; }
+header.top p { color: var(--muted); margin: 0; }
+nav.tabs {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: var(--bg); display: flex; gap: 6px; overflow-x: auto;
+  padding: 8px 0; border-bottom: 1px solid var(--line); scrollbar-width: none;
+}
+nav.tabs::-webkit-scrollbar { display: none; }
+nav.tabs button {
+  flex: 0 0 auto; font: inherit; font-weight: 600; font-size: 0.95rem;
+  padding: 9px 14px; border-radius: 999px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--fg); cursor: pointer; min-height: 44px;
+}
+nav.tabs button[aria-selected="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+:focus-visible { outline: 3px solid var(--accent-text); outline-offset: 2px; }
+section.panel { padding-top: 20px; display: grid; gap: 18px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; min-width: 0; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+.fact { display: grid; gap: 2px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.fact:last-child { border-bottom: 0; }
+.fact b { font-family: var(--font-display); font-size: 1.15rem; }
+.fact span { color: var(--muted); font-size: 0.9rem; }
+.num { font-variant-numeric: tabular-nums; }
+.table-scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 9px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+td.r, th.r { text-align: right; }
+tr.pick { cursor: pointer; }
+tr.pick[aria-selected="true"] td { background: var(--surface-2); font-weight: 600; }
+ul.plain { margin: 0; padding-left: 1.1rem; display: grid; gap: 6px; }
+.note { background: var(--warn-bg); color: var(--fg); border-left: 4px solid var(--warn); padding: 12px 14px; border-radius: 6px; }
+.pill { display: inline-block; font-size: 0.75rem; font-weight: 600; padding: 2px 9px; border-radius: 999px; letter-spacing: 0.02em; }
+.pill.aanrader { background: var(--good-bg); color: var(--good); }
+.pill.overwegen { background: var(--warn-bg); color: var(--warn); }
+.pill.overslaan { background: var(--skip-bg); color: var(--skip); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips button {
+  font: inherit; font-size: 0.9rem; font-weight: 600; padding: 8px 12px; min-height: 44px;
+  border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--fg); cursor: pointer;
+}
+.chips button[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.btn {
+  font: inherit; font-weight: 600; padding: 10px 16px; min-height: 44px; border-radius: 8px;
+  border: 1px solid var(--accent); background: var(--accent); color: var(--accent-fg); cursor: pointer;
+}
+.btn.ghost { background: transparent; color: var(--accent-text); }
+.btn-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.group-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin: 8px 0 8px; }
+.group-head span { color: var(--muted); font-size: 0.85rem; }
+.opt { display: grid; grid-template-columns: auto 1fr; gap: 12px; padding: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; margin-bottom: 10px; }
+.opt.on { border-color: var(--accent); box-shadow: inset 4px 0 0 var(--accent); }
+.opt.locked { opacity: 0.55; }
+.opt .main { min-width: 0; display: grid; gap: 6px; }
+.opt .row1 { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+.opt .title { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.opt .price { font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
+.opt .price.neg { color: var(--good); }
+.opt .meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; color: var(--muted); font-size: 0.85rem; }
+.check { width: 28px; height: 28px; accent-color: var(--accent); margin: 2px 0 0; cursor: pointer; }
+.stepper { display: grid; grid-template-columns: 44px 36px 44px; align-items: center; text-align: center; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; align-self: start; }
+.stepper button { font: inherit; font-size: 1.2rem; height: 44px; border: 0; background: var(--surface-2); color: var(--fg); cursor: pointer; }
+.stepper output { font-weight: 600; font-variant-numeric: tabular-nums; }
+details summary { cursor: pointer; color: var(--accent-text); font-size: 0.9rem; font-weight: 600; min-height: 32px; display: flex; align-items: center; }
+details .body { display: grid; gap: 8px; padding-top: 6px; font-size: 0.95rem; }
+details .body p { margin: 0; }
+.bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+  background: var(--surface); border-top: 1px solid var(--line);
+  padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+}
+.bar .in { max-width: 760px; margin: 0 auto; display: flex; gap: 12px; align-items: center; justify-content: space-between; }
+.bar .bnrtag { font-weight: 600; color: var(--muted); }
+.bar select { font: inherit; padding: 8px; min-height: 44px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); max-width: 46%; }
+.bar .tot { text-align: right; cursor: pointer; background: none; border: 0; color: var(--fg); font: inherit; padding: 0; }
+.bar .tot small { display: block; color: var(--muted); font-size: 0.78rem; }
+.bar .tot strong { font-family: var(--font-display); font-size: 1.3rem; font-variant-numeric: tabular-nums; }
+.sumrow { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.sumrow span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.sumrow.big { font-family: var(--font-display); font-weight: 800; font-size: 1.2rem; border-bottom: 0; }
+.muted { color: var(--muted); }
+.sr { position: absolute; left: -9999px; }
+@media (prefers-reduced-motion: no-preference) { .opt { transition: border-color .15s; } }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">Beuningen · Bouwbedrijf van Peer</span>
+    <h1>Liviahof, type G en H</h1>
+    <p>Levensloopbestendige woning met slaapkamer en badkamer beneden. Kies je opties en zie direct wat het kost.</p>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Onderdelen">
+    <button role="tab" id="t-woning" aria-selected="true" data-tab="woning">De woning</button>
+    <button role="tab" id="t-opties" aria-selected="false" data-tab="opties">Opties</button>
+    <button role="tab" id="t-totaal" aria-selected="false" data-tab="totaal">Mijn keuze</button>
+    <button role="tab" id="t-letop" aria-selected="false" data-tab="letop">Let op</button>
+  </nav>
+
+  <!-- DE WONING -->
+  <section class="panel" id="p-woning" role="tabpanel" aria-labelledby="t-woning">
+    <div class="card">
+      <h2>Kerncijfers</h2>
+      <div class="fact"><b id="house-line">Bouwnummer 30</b><span id="house-sub">type H</span></div>
+      <div class="fact"><b>130 m²</b><span>woonoppervlak (projectsite)</span></div>
+      <div class="fact"><b>A+++ · gasloos</b><span>warmtepomp met bodemlus, vloerverwarming, balansventilatie met warmteterugwinning, koeling in de zomer</span></div>
+      <div class="fact"><b>Ca. 5,4 × 9,0 m</b><span>grondvlak, uit de tekening gemeten, indicatief</span></div>
+      <div class="fact"><b>€ 2.500</b><span>keukenwaardecheque in de koopprijs, alleen te gebruiken bij Huysinc (Waardenburg)</span></div>
+      <div class="fact"><b>€ 5.250</b><span>budget voor sanitair (Villeroy &amp; Boch), verrekenbaar. Tegels: € 35/m² vloer en € 40/m² wand</span></div>
+    </div>
+
+    <div class="card">
+      <h2>Indeling</h2>
+      <h3>Begane grond</h3>
+      <ul class="plain" style="margin-bottom:14px">
+        <li>Woonkamer met open keuken, ca. 36 m²</li>
+        <li>Slaapkamer 1, ca. 13 m²</li>
+        <li>Badkamer met douche en toilet, apart toilet, entree</li>
+        <li>Berging, ca. 9 m², en een technische ruimte met warmtepomp, wasmachine en droger</li>
+        <li>Achter: dubbele deur naar de tuin (schuifpui als optie)</li>
+      </ul>
+      <h3>1e verdieping</h3>
+      <ul class="plain" style="margin-bottom:14px">
+        <li>Slaapkamers en een badkamer met douche, ligbad (180 × 80 cm) en toilet. De optielijst spreekt van 3 slaapkamers; controleer dit op tekening VK-12</li>
+        <li>Standaard een dakraam (ca. 114 × 118 cm). De technische omschrijving noemt voor type G en H ook een dakkapel; controleer op de tekening waar</li>
+      </ul>
+      <h3>Vliering</h3>
+      <ul class="plain">
+        <li>Bereikbaar met een vlizotrap, onverwarmd, dakhout in het zicht. Opslag, geen kamer.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Hoe is het gebouwd</h2>
+      <ul class="plain">
+        <li>Baksteen, keramische dakpannen, hardhouten kozijnen met triple glas</li>
+        <li>Isolatie: vloer Rc 3,7 · gevel Rc 4,7 · dak Rc 6,3</li>
+        <li>Betonnen verdiepingsvloeren, cementdekvloer, vloerverwarming op alle verdiepingen</li>
+        <li>Wanden "behangklaar" (dun gepleisterd). Plafonds met structuurspuitverf</li>
+        <li>Geen vloerplinten; onderste ca. 35 mm van de wand blijft kaal</li>
+        <li>Woningborg-garantie: 6 jaar en 3 maanden op de kwaliteit, tot 10 jaar en 3 maanden bij ernstige gebreken. De bodembron van de warmtepomp valt buiten de garantie</li>
+        <li>Koopsom staat vast (alleen btw-wijziging kan meetellen)</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>De buurt</h2>
+      <p>Liviahof ligt midden in Beuningen, tussen de Krommehoekstraat, de Augustuslaan en de Wilhelminalaan, rond een nieuw park met speelplek en een wadi voor regenwater. Dorpscentrum met winkels en horeca dichtbij, Nijmegen op korte afstand, A73 en A50 snel bereikbaar. De Groene Heuvels (recreatieplas) ligt vlak bij.</p>
+      <p class="muted">Plan: 49 woningen. Inrichting van de openbare ruimte is nog niet definitief vastgesteld door de gemeente.</p>
+      <div class="btn-row">
+        <a class="btn ghost" style="text-decoration:none;display:inline-flex;align-items:center" href="https://liviahof.nl/" target="_blank" rel="noopener">Projectsite</a>
+        <a class="btn ghost" style="text-decoration:none;display:inline-flex;align-items:center" href="https://www.mijnliviahof.nl/downloads" target="_blank" rel="noopener">Alle documenten</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Contact</h2>
+      <p style="margin-bottom:4px"><b>Hans Janssen Makelaars</b>, Van Heemstraweg 71, Beuningen</p>
+      <p style="margin-bottom:4px">Telefoon: <span class="num">024 - 679 09 21</span></p>
+      <p>E-mail: nieuwbouw@hansjanssen.nl</p>
+    </div>
+    <details class="card" id="bnr-details">
+      <summary>Ander bouwnummer kiezen</summary>
+      <p class="muted" style="margin-top:12px">Prijzen en kavelgrootte van de projectsite (stand bij het opstellen van deze pagina). Alle woningen stonden toen op "onder optie". Tik op een rij om te kiezen.</p>
+      <div class="table-scroll">
+        <table id="bnr-table">
+          <thead><tr><th>Nr</th><th>Type</th><th class="r">Koopprijs</th><th class="r">Kavel</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="muted" style="margin-top:10px">Type G is vrijstaand geschakeld (nr 20 en 31, groter kavel). Type H is een tweekapper. De plattegrond is gelijk; de optielijst geldt voor beide.</p>
+        </details>
+  </section>
+
+  <!-- OPTIES -->
+  <section class="panel" id="p-opties" role="tabpanel" aria-labelledby="t-opties" hidden>
+    <div class="card">
+      <h2>Opties</h2>
+      <p class="muted">Alle prijzen zijn inclusief 21% btw (optielijst van 17 juli 2026). Het label is mijn inschatting op basis van prijs, nut en wat al in de woning zit. Het is geen bouwkundig advies. Ga je zelf aan de slag, check dan de laatste optielijst en de aanvulling voor type G en H bij de makelaar.</p>
+      <div class="chips" id="filters" role="group" aria-label="Filter"></div>
+      <div class="btn-row" style="margin-top:12px">
+        <button class="btn" id="btn-rec" type="button">Kies mijn aanraders</button>
+        <button class="btn ghost" id="btn-clear" type="button">Wis alle keuzes</button>
+      </div>
+      <p id="clear-msg" class="muted" style="margin:8px 0 0" hidden>Tik nogmaals op "Wis alle keuzes" om te bevestigen.</p>
+    </div>
+    <div id="opt-list"></div>
+  </section>
+
+  <!-- MIJN KEUZE -->
+  <section class="panel" id="p-totaal" role="tabpanel" aria-labelledby="t-totaal" hidden>
+    <div class="card" id="sum-card"></div>
+    <div class="card">
+      <h2>Wat past in dit plaatje</h2>
+      <div id="rec-compare"></div>
+    </div>
+  </section>
+
+  <!-- LET OP -->
+  <section class="panel" id="p-letop" role="tabpanel" aria-labelledby="t-letop" hidden>
+    <div class="card">
+      <h2>Vragen voor de makelaar</h2>
+      <ul class="plain">
+        <li><b>Btw op zonnepanelen.</b> De technische omschrijving noemt 0% btw op de panelen. De optielijst zegt dat alle prijzen 21% btw bevatten. Het startpakket (€ 3.480) zou bij 0% ongeveer € 600 lager zijn, elk extra paneel ongeveer € 100.</li>
+        <li><b>Aanvulling optielijst type G en H.</b> Op de downloadpagina staat een aanvulling. Die heb ik niet gezien. Vraag wat daarin staat.</li>
+        <li><b>Hoeveel panelen passen?</b> Dak, dakkapel en dakramen concurreren om dezelfde ruimte.</li>
+        <li><b>Tot wanneer kun je opties kiezen?</b> Na ondertekening, binnen een termijn. Bij verkoop na de start van de bouw mag de aannemer opties weigeren.</li>
+        <li><b>Opleverdatum en koopsomopbouw.</b> Ik vond geen opleverdatum in de stukken.</li>
+        <li><b>Status van het bouwnummer.</b> Op de projectsite stonden alle woningen op "onder optie". Inschrijving liep van 24 september tot 4 oktober 2026; vraag naar de reservelijst.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Goed om te weten</h2>
+      <ul class="plain">
+        <li><b>Keuken.</b> Je krijgt geen keuken, wel een cheque van € 2.500 bij Huysinc. De cheque vervalt als je hem niet gebruikt en is alleen voor de oplevering in te wisselen.</li>
+        <li><b>Afzuigkap.</b> Alleen een recirculatiekap kan. Afvoer naar buiten mag niet door het ventilatiesysteem. Kies een goede kookplaat met afzuiging.</li>
+        <li><b>Vloer.</b> Vloerverwarming: niet boren in de vloer. Kies vloerbedekking met lage warmteweerstand (geen kurk, parket van zacht hout of hoogpolig tapijt).</li>
+        <li><b>Wanden en plinten.</b> Wanden zijn behangklaar maar nog niet glad voor sauzen. Plinten zijn niet inbegrepen.</li>
+        <li><b>Zonder zonnepanelen.</b> Een warmtepomp gebruikt stroom. Standaard zitten er geen panelen op het dak.</li>
+        <li><b>Boiler.</b> Het warmwatervat (200 L) kan leeg raken bij veel gebruik; daarna moet het opwarmen.</li>
+        <li><b>Nachtverlaging.</b> Met vloerverwarming bespaart het verlagen van de temperatuur in de nacht vrijwel niets.</li>
+        <li><b>Aansluitingen.</b> Internet, tv en telefoon vraag je zelf aan. Die kosten zitten niet in de koopsom.</li>
+        <li><b>Tuin.</b> Hoogteverschillen worden met een talud opgevangen. Op de infiltratievoorziening in je tuin kun je beperkt bomen planten. Te veel verharding kan wateroverlast geven.</li>
+        <li><b>Ventilatie.</b> Filters van de balansventilatie moet je zelf schoonmaken en vervangen.</li>
+        <li><b>Reken ook op</b> vloer, verf of behang, gordijnen, keuken boven de cheque, onderhoud (ramen, panelen) en de financieringskosten.</li>
+        <li><b>Subsidies</b> voor de woning komen volgens de technische omschrijving ten goede aan de verkoper.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Bronnen</h2>
+      <p class="muted">Optielijst type G en H (17-07-2026), technische omschrijving (27-05-2026), brochure (april 2026), situatietekening VK-01 (1 oktober 2026) en de projectsite liviahof.nl / mijnliviahof.nl. Maten zijn circa-maten. Aan deze pagina kun je geen rechten ontlenen; de officiële stukken van de makelaar gelden.</p>
+    </div>
+  </section>
+</div>
+
+<div class="bar">
+  <div class="in">
+    <span class="bnrtag" id="bar-house">Nr 30</span>
+    <button class="tot" id="bar-total" type="button" aria-label="Open mijn keuze">
+      <small id="bar-sub">Opties</small>
+      <strong id="bar-amount">€ 0</strong>
+    </button>
+  </div>
+</div>
+
+<script>
+(function () {
+  var HOUSES = [
+    [20, 'G', 640000, 234], [21, 'H', 595000, 182], [22, 'H', 595000, 184],
+    [23, 'H', 597500, 187], [24, 'H', 597500, 189], [25, 'H', 600000, 190],
+    [26, 'H', 600000, 191], [27, 'H', 600000, 193], [28, 'H', 602500, 194],
+    [29, 'H', 602500, 195], [30, 'H', 602500, 196], [31, 'G', 677500, 360]
+  ];
+
+  var GROUPS = {
+    plattegrond: 'Plattegrond en uitbreiding',
+    dak: 'Dakkapel en dakramen',
+    deuren: 'Deuren, trap en glas',
+    water: 'Water en warmtepomp',
+    elektra: 'Elektra en zonnepanelen',
+    data: 'Internet en tv',
+    afwerking: 'Wanden en plafonds'
+  };
+
+  // v: a = aanrader, o = overwegen, s = overslaan. rec = aantal in "mijn aanraders".
+  var OPTS = [
+    { id: 1, g: 'plattegrond', t: 'Woning 1,2 m dieper aan de achterkant', p: 22420, v: 'o',
+      d: 'Aanbouw over de breedte van de achtergevel. Achterdeur schuift mee. Warmtepomp, vloerverwarming en elektra zijn inbegrepen.',
+      why: 'Meer leefruimte, maar € 22.420 is veel voor 1,2 m. De woonkamer is ca. 36 m² inclusief keuken; kies dit alleen als die echt te klein voelt. Later bijbouwen kost waarschijnlijk niet minder en geeft verbouwlast aan een afgewerkte woning.' },
+    { id: 2, g: 'plattegrond', t: 'Schuifpui in de achtergevel', p: 2650, v: 'a', rec: 1,
+      d: 'Schuifpui in plaats van het kozijn met dubbele deur. Bediening van binnen en buiten.',
+      why: 'Een schuifpui is makkelijker te bedienen dan draaiende deuren, ook met rollator of rolstoel, en neemt geen ruimte in. Voor € 2.650 is dit een van de beste opties voor een levensloopbestendige woning. Vraag naar de drempelhoogte.' },
+    { id: 3, g: 'plattegrond', t: 'Carport langs de zijgevel', p: 10450, v: 'o',
+      d: 'Ca. 5,2 m lang, in het verlengde van de berging, tot aan het zijgevelraam.',
+      why: 'Handig voor droge auto of fietsen. Wel duur. Kijk eerst of de opstelplaats voor de auto en de berging genoeg zijn.' },
+    { id: 4, g: 'plattegrond', t: 'Slaapkamer 1 groter, badkamer schuift naar de berging', p: 1260, v: 'a', rec: 1,
+      d: 'De badkamer schuift op ten koste van de berging. Slaapkamer 1 wordt groter. Installatie en afwerking zijn inbegrepen.',
+      why: 'Slaapkamer 1 is ca. 13 m². Dat is krap voor bed, kasten en draairuimte, zeker als je hier later blijft wonen. Voor € 1.260 is dit goedkoop. Je levert wel een deel van de berging van ca. 9 m² in.' },
+    { id: 5, g: 'plattegrond', t: 'Slaapkamer 1 tot 2,4 m langer (indien mogelijk)', p: 22750, v: 's',
+      d: 'Slaapkamer 2,4 m verlengen aan de achterzijde. Alleen waar de situatie het toelaat.',
+      why: 'Erg duur. Optie 4 geeft al meer ruimte voor een fractie van de prijs.' },
+    { id: 6, g: 'plattegrond', t: 'Slaapkamer 2 en berging boven samenvoegen', p: -250, v: 'o',
+      d: 'Eén grotere slaapkamer in plaats van een kamer en een berging op de 1e verdieping.',
+      why: 'Je krijgt € 250 terug en een ruimere kamer. Je verliest de berging boven en een kamer minder kan later de verkoopbaarheid iets verlagen. Alleen kiezen als je boven geen extra opslag nodig hebt.' },
+    { id: 7, g: 'plattegrond', t: 'Apart toilet op de 1e verdieping', p: 4390, v: 'o',
+      d: 'Toiletruimte in de kast op de verdieping. Zonder fontein.',
+      why: 'Er zijn al een toilet en een badkamer met toilet beneden en een badkamer met toilet boven. € 4.390 is veel. Pas als je vaak logés hebt of een druk gezin.' },
+
+    { id: 8, g: 'dak', t: 'Dakkapel voor of achter, ca. 1,8 m breed', p: 13990, v: 'o', excl: 'dakkapel',
+      d: 'Dakkapel met plat dak. Capaciteit van de warmtepomp wordt aangepast.',
+      why: 'Meer hoofdruimte en licht boven. Het haalt dakoppervlak weg dat je voor zonnepanelen kunt gebruiken. Bepaal eerst hoeveel panelen je wilt.' },
+    { id: 9, g: 'dak', t: 'Dakkapel achter, ca. 3,4 m breed', p: 17890, v: 's', excl: 'dakkapel',
+      d: 'Brede dakkapel aan de achterzijde.',
+      why: 'Erg duur en ten koste van zonnepanelen. Niet te combineren met de kleine dakkapel (optie 8).' },
+    { id: 10, g: 'dak', t: 'Dakvenster 114 × 118 cm', p: 2550, max: 3, v: 's',
+      d: 'Per stuk, inclusief aftimmering. Plek geef je aan bij opdracht.',
+      why: 'Er zit al een dakraam van dit formaat in de woning. Een extra raam kost ruim € 2.500. Alleen zinvol voor een donkere overloop of kamer.' },
+    { id: 11, g: 'dak', t: 'Dakvenster 78 × 118 cm', p: 2200, max: 3, v: 's',
+      d: 'Per stuk, inclusief aftimmering.', why: 'Zie optie 10. Alleen bij een duidelijk lichtprobleem.' },
+    { id: 12, g: 'dak', t: 'Dakvenster 55 × 78 cm', p: 1840, max: 3, v: 's',
+      d: 'Per stuk, inclusief aftimmering.', why: 'Zie optie 10. Klein raam voor veel geld.' },
+
+    { id: 13, g: 'deuren', t: 'Binnendeur met kozijn verplaatsen', p: 130, max: 4, v: 'o',
+      d: 'Per deur, inclusief de schakelaar. Wens met maten op tekening.',
+      why: 'Goedkoop. Kijk op de plattegrond of een deur beter kan staan voor meubels of een rolstoel.' },
+    { id: 14, g: 'deuren', t: 'Draairichting binnendeur wijzigen', p: 130, max: 4, v: 'o',
+      d: 'Per deur, inclusief de schakelaar.',
+      why: 'Goedkoop en soms erg handig, bijvoorbeeld als een deur tegen een bed of kast zou slaan.' },
+    { id: 15, g: 'deuren', t: 'Bovenlichten dichtzetten, begane grond', p: 140, max: 6, v: 's',
+      d: 'Per deur. Geen garantie op scheurvorming.',
+      why: 'Je verliest daglicht in de gang en krijgt geen garantie tegen scheurtjes. Meestal niet de moeite.' },
+    { id: 16, g: 'deuren', t: 'Bovenlichten dichtzetten, 1e verdieping', p: 140, max: 6, v: 's',
+      d: 'Per deur. Geen garantie op scheurvorming.', why: 'Zie optie 15.' },
+    { id: 17, g: 'deuren', t: 'Slijtstrippen op de trap', p: 300, v: 'a', rec: 1,
+      d: 'Zwarte strip op elke trede, trap begane grond naar 1e verdieping.',
+      why: 'De trap is van vurenhout en slijt snel. Voor € 300 bescherm je de treden. Achteraf frezen kost meer.' },
+    { id: 18, g: 'deuren', t: 'Veiligheidsglas (gelaagd) onder 85 cm', p: 840, v: 'a', rec: 1,
+      d: 'Gelaagd glas in alle gevelkozijnen en ramen onder ca. 85 cm. Standaard voldoet het glas niet aan NEN 3569.',
+      why: 'Gelaagd glas breekt niet in scherven en is lastiger in te slaan. € 840 voor de hele woning is weinig, vooral met kinderen of kans op een val.' },
+
+    { id: 19, g: 'water', t: 'Schrobput', p: 350, v: 'o',
+      d: 'Put op de vuilwaterriolering.', why: 'Handig bij een terras of werkplek bij de berging. Anders niet nodig.' },
+    { id: 20, g: 'water', t: 'Buitenkraan met vorstbeveiliging', p: 520, v: 'a', rec: 1,
+      d: 'Vorstvrije kraan buiten.',
+      why: 'Een tuinkraan is bijna altijd gewenst en achteraf aanleggen door de gevel en vloer is lastig.' },
+    { id: 21, g: 'water', t: 'Boiler van 200 naar 240 liter', p: 575, v: 'a', rec: 1,
+      d: 'Meer warm water voor twee badkamers en een ligbad.',
+      why: 'Een warmtepompboiler warmt langzaam op. Voor € 575 is er minder kans dat het water op is.' },
+    { id: 22, g: 'water', t: 'Extra bediening ventilatie badkamer', p: 210, v: 's',
+      d: 'Losse draadloze schakelaar.', why: 'Standaard zit er al een bediening. Weinig meerwaarde.' },
+    { id: 23, g: 'water', t: 'Afvoer voor condensdroger', p: 110, v: 'a', rec: 1,
+      d: 'T-stuk op de wasmachineafvoer voor de slang van een condensdroger.',
+      why: 'Geen waterbakje meer legen. Alleen als je een droger gebruikt (of gaat gebruiken). Dat kost maar € 110.' },
+    { id: 24, g: 'water', t: 'Uitstortgootsteen met warm en koud water in berging', p: 1325, v: 's', excl: 'bergingwater',
+      d: 'Gootsteen met mengkraan en afvoer.', why: 'Alleen nodig als de berging werkplaats of hobbyruimte wordt.' },
+    { id: 25, g: 'water', t: 'Uitstortgootsteen met koud water in berging', p: 1140, v: 's', excl: 'bergingwater',
+      d: 'Gootsteen met tapkraan en afvoer.', why: 'Zie optie 24.' },
+    { id: 26, g: 'water', t: 'Aansluitingen berging: koud, warm water en afvoer', p: 660, v: 'o', excl: 'bergingwater',
+      d: 'Alleen de aansluitingen, zonder gootsteen.',
+      why: 'Wil je later een gootsteen? Kies liever alleen de aansluitingen en koop zelf een gootsteen.' },
+    { id: 27, g: 'water', t: 'Aansluitingen berging: koud water en afvoer', p: 475, v: 'o', excl: 'bergingwater',
+      d: 'Alleen de aansluitingen, zonder gootsteen.', why: 'Zie optie 26. Goedkoopste manier om de berging klaar te maken.' },
+
+    { id: 28, g: 'elektra', t: 'Zonnepanelen: startpakket van 3 panelen', p: 3480, v: 'a', rec: 1,
+      d: 'Drie panelen (ca. 100 × 160 cm) op het gunstigste dakvlak. Uitbreiden kan, afhankelijk van het dak.',
+      why: 'Een gasloze woning met warmtepomp gebruikt veel stroom. Reken indicatief op 350 tot 400 kWh per paneel per jaar. Het startpakket is duur (€ 1.160 per paneel); extra panelen zijn veel goedkoper. Vraag of de btw 0% of 21% is.' },
+    { id: 29, g: 'elektra', t: 'Extra zonnepaneel (all-black)', p: 590, max: 8, v: 'a', rec: 2, req: 28,
+      d: 'Per paneel, bovenop het startpakket.',
+      why: 'Dit zijn de goedkoopste panelen. Vul het dak zo vol als past. Een dakkapel of dakraam haalt ruimte weg.' },
+    { id: 30, g: 'elektra', t: 'Aansluiting voor zonwering', p: 340, max: 5, v: 'o',
+      d: 'Bekabeling voor rolluik of screen, per raam.',
+      why: 'Handig bij ramen op het zuiden of westen. De vloer kan in de zomer ook koelen, dus niet overal nodig.' },
+    { id: 31, g: 'elektra', t: 'Extra rookmelder, aangesloten op het net', p: 250, max: 4, v: 'o',
+      d: 'Bijvoorbeeld in slaapkamers of de keuken.',
+      why: 'De basis voldoet aan de wet. Extra veiligheid in slaapkamers is goed, maar een losse melder uit de winkel kost veel minder.' },
+    { id: 32, g: 'elektra', t: 'Wandpunt horizontaal verplaatsen', p: 75, max: 8, v: 'a', rec: 2,
+      d: 'Stopcontact, schakelaar of loze leiding, per punt. Plafondlichtpunten blijven staan.',
+      why: 'Goedkoop. Verplaats punten naar de plek waar je meubels, bed of tv komen.' },
+    { id: 33, g: 'elektra', t: 'Extra wandcontactdoos op bestaande groep', p: 180, max: 8, v: 'a', rec: 3,
+      d: 'Enkel of dubbel, per stuk, voor gewoon gebruik.',
+      why: 'Te weinig stopcontacten is een veelgehoorde spijt. Achteraf kost het breekwerk.' },
+    { id: 34, g: 'elektra', t: 'Wandcontactdoos op eigen nieuwe groep', p: 405, max: 3, v: 'o',
+      d: 'Voor zware apparaten zoals droger, oven of sauna.',
+      why: 'Keukenapparatuur via Huysinc regelt dat zelf. Kies dit alleen voor iets zwaars buiten de keuken.' },
+    { id: 35, g: 'elektra', t: 'Meterkast: 4-voudige wandcontactdoos', p: 55, v: 'a', rec: 1,
+      d: 'In plaats van 2-voudig.', why: 'Plek voor modem, router en meer. Goedkoop.' },
+    { id: 36, g: 'elektra', t: 'Enkele contactdoos wordt dubbel', p: 40, max: 10, v: 'a', rec: 3,
+      d: 'Niet bij de aparte groep van de wasmachine.',
+      why: 'Goedkoopste winst: dubbele contactdozen bij bed, bureau en tv.' },
+    { id: 37, g: 'elektra', t: 'Extra lichtpunt met eigen schakelaar', p: 220, max: 4, v: 'o',
+      d: 'Wand- of plafondlichtpunt.', why: 'Een wandlamp of leeslamp is fijn, maar vaak lost een staande lamp het ook op.' },
+    { id: 38, g: 'elektra', t: 'Extra lichtpunt op bestaande schakelaar', p: 165, max: 4, v: 'o',
+      d: 'Wand- of plafondlichtpunt.', why: 'Zie optie 37. Iets goedkoper.' },
+    { id: 39, g: 'elektra', t: 'Extra lichtpunt met 2 schakelaars (wissel)', p: 285, max: 3, v: 'o',
+      d: 'Twee schakelaars bedienen één lichtpunt.', why: 'Zie optie 40; dit is de variant met een nieuw lichtpunt.' },
+    { id: 40, g: 'elektra', t: 'Extra schakelaar op bestaand licht (wissel)', p: 115, max: 4, v: 'a', rec: 1,
+      d: 'Twee schakelaars bedienen één lichtpunt.',
+      why: 'Handig bij het bed, de trap of de gang, zodat je niet in het donker hoeft te lopen. € 115 is weinig.' },
+    { id: 41, g: 'elektra', t: 'Extra schakelaar op bestaand licht (kruis, 3 schakelaars)', p: 140, max: 3, v: 'o',
+      d: 'Drie schakelaars bedienen één lichtpunt.', why: 'Alleen voor een lange gang of trap met drie toegangen.' },
+    { id: 42, g: 'elektra', t: 'Buitencontactdoos enkel, spatwaterdicht', p: 230, max: 3, v: 'a', rec: 1,
+      d: 'Niet geschakeld.', why: 'Voor grasmaaier, kerstverlichting of e-bike. Achteraf door de gevel boren kan, maar kost meer.' },
+    { id: 43, g: 'elektra', t: 'Buitencontactdoos enkel, geschakeld', p: 280, max: 3, v: 'o',
+      d: 'Aan en uit via een schakelaar in huis.', why: 'Alleen nodig voor sfeerverlichting. Optie 42 is vaak genoeg.' },
+    { id: 44, g: 'elektra', t: 'Buitencontactdoos dubbel, spatwaterdicht', p: 280, max: 3, v: 'o',
+      d: 'Niet geschakeld.', why: 'Alleen als je twee dingen tegelijk wilt aansluiten.' },
+    { id: 45, g: 'elektra', t: 'Buitencontactdoos dubbel, geschakeld', p: 330, max: 3, v: 'o',
+      d: 'Aan en uit via een schakelaar in huis.', why: 'Zie optie 43.' },
+    { id: 46, g: 'elektra', t: 'Grondkabel van 10 m voor tuinverlichting', p: 385, v: 'o',
+      d: 'Gepantserde kabel op een schakelaar in huis, 10 m overlengte.',
+      why: 'Handig als je tuinverlichting of een aansluiting in de tuin wilt. Anders overslaan.' },
+    { id: 47, g: 'elektra', t: 'Grondkabel: extra lengte', p: 25, max: 40, v: 'o', req: 46,
+      d: 'Prijs per meter.', why: 'Alleen met optie 46.' },
+    { id: 48, g: 'elektra', t: 'Extra loze leiding vanuit de meterkast', p: 145, max: 4, v: 'a', rec: 1,
+      d: 'Lege buis met deksel, 30 cm boven de vloer, met trekdraad.',
+      why: 'Een lege buis maakt een laadpaal of extra kabel later makkelijk. € 145 nu is goedkoper dan breken en sleuven.' },
+    { id: 49, g: 'elektra', t: 'Twee elektrapunten samenvoegen onder meergatsraam', p: 60, v: 's',
+      d: 'Geen extra leiding of contactdoos, alleen samenvoegen.', why: 'Weinig nut.' },
+
+    { id: 50, g: 'data', t: 'Lege datapijp bedraden en afmonteren (Cat 6)', p: 170, max: 4, v: 'a', rec: 1,
+      d: 'Per aansluitpunt, in een bestaande lege leiding.',
+      why: 'Een bedrade verbinding is sneller en stabieler dan wifi, bijvoorbeeld voor thuiswerken of tv.' },
+    { id: 51, g: 'data', t: 'Nieuw datapunt (Cat 6)', p: 300, max: 4, v: 'o',
+      d: 'Complete aansluiting op een nieuwe plek.', why: 'Alleen als de standaardpunten niet op de goede plek zitten.' },
+    { id: 52, g: 'data', t: 'Verticale kabelgoot in de muur', p: 440, max: 2, v: 'o',
+      d: '60 mm breed, tot 2 m hoog, onzichtbaar weggewerkt.',
+      why: 'Alleen voor een tv aan de muur zonder zichtbare kabels. Anders te duur.' },
+
+    { id: 53, g: 'afwerking', t: 'Structuurspuitverf wanden woonkamer en keuken', p: 1525, v: 's',
+      d: 'Wit. Krimpscheuren zijn niet uit te sluiten.',
+      why: 'Standaard zijn wanden behangklaar, maar nog niet glad. Spuitwerk bespaart plamuur- en schilderwerk, maar is moeilijk te verwijderen. Vraag eerst een offerte aan een schilder of stukadoor.' },
+    { id: 54, g: 'afwerking', t: 'Structuurspuitverf wanden aanbouw 1,2 m', p: 95, v: 's', req: 1,
+      d: 'Alleen samen met optie 1.', why: 'Alleen met optie 1 en optie 53.' },
+    { id: 55, g: 'afwerking', t: 'Structuurspuitverf wanden aanbouw 2,4 m', p: 190, v: 's', req: 5,
+      d: 'Alleen samen met optie 5.', why: 'Alleen met optie 5 en optie 53.' },
+    { id: 56, g: 'afwerking', t: 'Structuurspuitverf entree, trap en overloop', p: 750, v: 'o',
+      d: 'Wit, tot de bovenkant van het traphek.',
+      why: 'Het trapgat is moeilijk zelf te schilderen. € 750 is een redelijke prijs voor dit moeilijke werk.' },
+    { id: 57, g: 'afwerking', t: 'Structuurspuitverf wanden slaapkamers', p: 2100, v: 's',
+      d: 'Alle slaapkamers op de 1e verdieping, wit.', why: 'Duur. Zie optie 53.' },
+    { id: 58, g: 'afwerking', t: 'Structuurspuitverf plafonds berging', p: 250, v: 's',
+      d: 'Zoals de rest van de woning.', why: 'Alleen opbergruimte. Niet nodig.' },
+    { id: 59, g: 'afwerking', t: 'Spuitwerk plafonds begane grond laten vervallen', p: -200, v: 's', excl: 'plafondbg',
+      d: 'Plafonds worden ruw opgeleverd, naden tussen vloerplaten blijven zichtbaar.',
+      why: 'Je bespaart € 200 maar krijgt een ruw plafond. Zelf afwerken kost meestal meer.' },
+    { id: 60, g: 'afwerking', t: 'Spuitwerk plafonds begane grond laten vervallen (met aanbouw 1,2 m)', p: -225, v: 's', excl: 'plafondbg', req: 1,
+      d: 'Alleen samen met optie 1.', why: 'Zie optie 59.' },
+    { id: 61, g: 'afwerking', t: 'Spuitwerk plafonds begane grond laten vervallen (met aanbouw 2,4 m)', p: -250, v: 's', excl: 'plafondbg', req: 5,
+      d: 'Alleen samen met optie 5.', why: 'Zie optie 59.' },
+    { id: 62, g: 'afwerking', t: 'Spuitwerk plafonds 1e verdieping laten vervallen', p: -200, v: 's',
+      d: 'Slaapkamers, badkamer en overloop worden ruw opgeleverd.', why: 'Zie optie 59.' }
+  ];
+
+  var VLABEL = { a: 'Aanrader', o: 'Overwegen', s: 'Overslaan' };
+  var VCLASS = { a: 'aanrader', o: 'overwegen', s: 'overslaan' };
+  var byId = {};
+  OPTS.forEach(function (o) { o.max = o.max || 1; byId[o.id] = o; });
+
+  var state = { bnr: 30, bnrSet: false, qty: {}, filter: 'alle', tab: 'woning' };
+  var STORE = 'liviahof-gh-v1';
+
+  function save() {
+    try { localStorage.setItem(STORE, JSON.stringify({ bnr: state.bnr, bnrSet: state.bnrSet, qty: state.qty })); } catch (e) {}
+  }
+  function load() {
+    try {
+      var raw = localStorage.getItem(STORE);
+      if (!raw) return;
+      var s = JSON.parse(raw);
+      if (s && s.bnrSet === true && typeof s.bnr === 'number' && HOUSES.some(function (h) { return h[0] === s.bnr; })) { state.bnr = s.bnr; state.bnrSet = true; }
+      if (s && s.qty && typeof s.qty === 'object') {
+        Object.keys(s.qty).forEach(function (k) {
+          var o = byId[k];
+          var n = Number(s.qty[k]);
+          if (o && n > 0 && n <= o.max) state.qty[k] = n;
+        });
+      }
+    } catch (e) {}
+  }
+
+  function eur(n) {
+    var sign = n < 0 ? '−' : '';
+    return sign + '€ ' + Math.abs(n).toLocaleString('nl-NL');
+  }
+  function house() { return HOUSES.filter(function (h) { return h[0] === state.bnr; })[0]; }
+  function qtyOf(o) { return state.qty[o.id] || 0; }
+  function lineTotal(o) { return qtyOf(o) * o.p; }
+  function optionsTotal() { return OPTS.reduce(function (s, o) { return s + lineTotal(o); }, 0); }
+  function selected() { return OPTS.filter(function (o) { return qtyOf(o) > 0; }); }
+
+  function setQty(o, n) {
+    n = Math.max(0, Math.min(o.max, n));
+    if (n > 0 && o.req && !qtyOf(byId[o.req])) return;
+    if (n > 0 && o.excl) {
+      OPTS.forEach(function (x) { if (x.id !== o.id && x.excl === o.excl) delete state.qty[x.id]; });
+    }
+    if (n === 0) delete state.qty[o.id]; else state.qty[o.id] = n;
+    if (n === 0) {
+      OPTS.forEach(function (x) { if (x.req === o.id) delete state.qty[x.id]; });
+    }
+    // een gekozen optie verliest haar vereiste niet; opruimen voor het geval een eis wegvalt
+    OPTS.forEach(function (x) { if (x.req && qtyOf(x) && !qtyOf(byId[x.req])) delete state.qty[x.id]; });
+    save();
+    renderAll();
+  }
+
+  function chooseRecommended() {
+    state.qty = {};
+    OPTS.forEach(function (o) { if (o.rec) state.qty[o.id] = Math.min(o.rec, o.max); });
+    save();
+    renderAll();
+  }
+
+  /* ---------- render ---------- */
+  function renderHouses() {
+    var tb = document.querySelector('#bnr-table tbody');
+    tb.innerHTML = HOUSES.map(function (h) {
+      var sel = h[0] === state.bnr;
+      return '<tr class="pick" tabindex="0" data-bnr="' + h[0] + '" aria-selected="' + sel + '">' +
+        '<td>' + h[0] + '</td><td>' + h[1] + '</td><td class="r num">' + eur(h[2]) + '</td><td class="r num">' + h[3] + ' m²</td></tr>';
+    }).join('');
+    var h = house();
+    document.getElementById('house-line').textContent = 'Bouwnummer ' + h[0] + ' · ' + eur(h[2]);
+    document.getElementById('house-sub').textContent = 'Type ' + h[1] + ', kavel ' + h[3] + ' m²';
+    document.getElementById('bar-house').textContent = 'Nr ' + h[0] + ' · ' + h[1];
+  }
+
+  function matchesFilter(o) {
+    if (state.filter === 'alle') return true;
+    if (state.filter === 'gekozen') return qtyOf(o) > 0;
+    return VCLASS[o.v] === state.filter;
+  }
+
+  function renderFilters() {
+    var counts = { alle: OPTS.length, aanrader: 0, overwegen: 0, overslaan: 0, gekozen: selected().length };
+    OPTS.forEach(function (o) { counts[VCLASS[o.v]]++; });
+    var defs = [['alle', 'Alles'], ['aanrader', 'Aanraders'], ['overwegen', 'Overwegen'], ['overslaan', 'Overslaan'], ['gekozen', 'Gekozen']];
+    document.getElementById('filters').innerHTML = defs.map(function (d) {
+      return '<button type="button" data-filter="' + d[0] + '" aria-pressed="' + (state.filter === d[0]) + '">' + d[1] + ' (' + counts[d[0]] + ')</button>';
+    }).join('');
+  }
+
+  function optionHtml(o) {
+    var n = qtyOf(o);
+    var locked = o.req && !qtyOf(byId[o.req]);
+    var control;
+    if (o.max > 1) {
+      control = '<div class="stepper" role="group" aria-label="Aantal voor optie ' + o.id + '">' +
+        '<button type="button" data-act="dec" data-id="' + o.id + '" aria-label="Minder"' + (n === 0 ? ' disabled' : '') + '>−</button>' +
+        '<output>' + n + '</output>' +
+        '<button type="button" data-act="inc" data-id="' + o.id + '" aria-label="Meer"' + ((n >= o.max || locked) ? ' disabled' : '') + '>+</button></div>';
+    } else {
+      control = '<input class="check" type="checkbox" id="chk-' + o.id + '" data-act="toggle" data-id="' + o.id + '"' +
+        (n ? ' checked' : '') + (locked ? ' disabled' : '') + ' aria-label="Kies optie ' + o.id + '">';
+    }
+    var price = o.max > 1 ? eur(o.p) + ' <small class="muted">per stuk</small>' : eur(o.p);
+    var sub = '';
+    if (o.max > 1 && n > 1) sub = '<span class="num">Totaal ' + eur(n * o.p) + '</span>';
+    var lock = locked ? '<span>Alleen met optie ' + o.req + '</span>' : '';
+    var excl = o.excl && !locked ? '<span>Sluit andere keuze in dezelfde groep uit</span>' : '';
+    return '<div class="opt' + (n ? ' on' : '') + (locked ? ' locked' : '') + '">' +
+      '<div>' + control + '</div>' +
+      '<div class="main">' +
+        '<div class="row1"><div class="title">' + o.t + '</div><div class="price num' + (o.p < 0 ? ' neg' : '') + '">' + price + '</div></div>' +
+        '<div class="meta"><span class="pill ' + VCLASS[o.v] + '">' + VLABEL[o.v] + '</span><span>Optie ' + o.id + '</span>' + sub + lock + excl + '</div>' +
+        '<details><summary>Wat is het en mijn advies</summary><div class="body"><p>' + o.d + '</p><p><b>Advies:</b> ' + o.why + '</p></div></details>' +
+      '</div></div>';
+  }
+
+  function renderOptions() {
+    var out = '';
+    Object.keys(GROUPS).forEach(function (g) {
+      var list = OPTS.filter(function (o) { return o.g === g && matchesFilter(o); });
+      if (!list.length) return;
+      out += '<div class="group-head"><h3>' + GROUPS[g] + '</h3><span>' + list.length + ' opties</span></div>';
+      out += list.map(optionHtml).join('');
+    });
+    if (!out) out = '<div class="card"><p class="muted" style="margin:0">Niets in dit filter.</p></div>';
+    var el = document.getElementById('opt-list');
+    var openIds = [];
+    el.querySelectorAll('details[open]').forEach(function (d) {
+      var c = d.closest('.opt').querySelector('[data-id]');
+      if (c) openIds.push(c.getAttribute('data-id'));
+    });
+    el.innerHTML = out;
+    el.querySelectorAll('.opt').forEach(function (box) {
+      var c = box.querySelector('[data-id]');
+      if (c && openIds.indexOf(c.getAttribute('data-id')) >= 0) box.querySelector('details').open = true;
+    });
+  }
+
+  function recTotal() {
+    return OPTS.reduce(function (s, o) { return s + (o.rec ? Math.min(o.rec, o.max) * o.p : 0); }, 0);
+  }
+
+  function renderSummary() {
+    var h = house();
+    var sel = selected();
+    var ot = optionsTotal();
+    var html = '<h2>Mijn keuze</h2>';
+    html += '<div class="sumrow"><span>Koopprijs nr ' + h[0] + ' (type ' + h[1] + ')</span><span class="num">' + eur(h[2]) + '</span></div>';
+    if (!sel.length) {
+      html += '<p class="muted" style="margin:12px 0">Je hebt nog geen opties gekozen. Ga naar Opties, of start met mijn aanraders.</p>';
+    } else {
+      Object.keys(GROUPS).forEach(function (g) {
+        var rows = sel.filter(function (o) { return o.g === g; });
+        if (!rows.length) return;
+        html += '<div class="eyebrow" style="margin-top:14px">' + GROUPS[g] + '</div>';
+        rows.forEach(function (o) {
+          var n = qtyOf(o);
+          html += '<div class="sumrow"><span>' + (n > 1 ? n + ' × ' : '') + o.t + ' <span class="muted">(optie ' + o.id + ')</span></span><span class="num">' + eur(n * o.p) + '</span></div>';
+        });
+      });
+    }
+    html += '<div class="sumrow" style="margin-top:8px"><span>Opties totaal</span><span class="num">' + eur(ot) + '</span></div>';
+    html += '<div class="sumrow big"><span>Totaal</span><span class="num">' + eur(h[2] + ot) + '</span></div>';
+    var pct = h[2] ? (ot / h[2] * 100) : 0;
+    html += '<p class="muted" style="margin-top:8px">Opties zijn ' + pct.toFixed(1).replace('.', ',') + '% van de koopprijs. Kosten van financiering, vloer, verf, gordijnen en keuken boven de cheque komen daar bovenop.</p>';
+    html += '<div class="btn-row"><button class="btn" id="btn-copy" type="button">Kopieer lijst</button><button class="btn ghost" id="btn-go-opt" type="button">Naar de opties</button></div>';
+    html += '<p id="copy-msg" class="muted" style="margin:8px 0 0" hidden></p>';
+    document.getElementById('sum-card').innerHTML = html;
+
+    var rt = recTotal();
+    var cmp = '<div class="sumrow"><span>Mijn aanraders samen</span><span class="num">' + eur(rt) + '</span></div>';
+    cmp += '<div class="sumrow"><span>Jouw keuze</span><span class="num">' + eur(ot) + '</span></div>';
+    var byV = { a: 0, o: 0, s: 0 };
+    sel.forEach(function (o) { byV[o.v] += lineTotal(o); });
+    cmp += '<div class="sumrow"><span><span class="pill aanrader">Aanrader</span> in jouw keuze</span><span class="num">' + eur(byV.a) + '</span></div>';
+    cmp += '<div class="sumrow"><span><span class="pill overwegen">Overwegen</span> in jouw keuze</span><span class="num">' + eur(byV.o) + '</span></div>';
+    cmp += '<div class="sumrow"><span><span class="pill overslaan">Overslaan</span> in jouw keuze</span><span class="num">' + eur(byV.s) + '</span></div>';
+    cmp += '<p class="muted" style="margin-top:10px">Mijn aanraders: schuifpui, grotere slaapkamer, veiligheidsglas, buitenkraan, groter boilervat, zonnepanelen (5 stuks), extra contactdozen en lichtschakelaars, een lege leiding en een bedrade datapunt. Dat zijn vooral goedkope dingen die achteraf lastig of duur zijn.</p>';
+    document.getElementById('rec-compare').innerHTML = cmp;
+  }
+
+  function renderBar() {
+    var h = house();
+    var ot = optionsTotal();
+    document.getElementById('bar-amount').textContent = eur(h[2] + ot);
+    document.getElementById('bar-sub').textContent = 'Opties ' + eur(ot) + ' · totaal';
+  }
+
+  function renderAll() {
+    renderHouses();
+    renderFilters();
+    renderOptions();
+    renderSummary();
+    renderBar();
+  }
+
+  /* ---------- tabs ---------- */
+  var TABS = ['woning', 'opties', 'totaal', 'letop'];
+  function showTab(name, focusTab) {
+    if (TABS.indexOf(name) < 0) name = 'woning';
+    state.tab = name;
+    TABS.forEach(function (t) {
+      var on = t === name;
+      document.getElementById('p-' + t).hidden = !on;
+      document.getElementById('t-' + t).setAttribute('aria-selected', String(on));
+    });
+    window.scrollTo(0, 0);
+    if (focusTab) document.getElementById('t-' + name).focus();
+  }
+
+  /* ---------- events ---------- */
+  document.querySelector('nav.tabs').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-tab]');
+    if (b) showTab(b.getAttribute('data-tab'));
+  });
+  document.getElementById('bar-total').addEventListener('click', function () { showTab('totaal'); });
+  document.getElementById('bnr-table').addEventListener('click', function (e) {
+    var r = e.target.closest('[data-bnr]');
+    if (r) { state.bnr = Number(r.getAttribute('data-bnr')); state.bnrSet = true; save(); renderAll(); }
+  });
+  document.getElementById('bnr-table').addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    var r = e.target.closest('[data-bnr]');
+    if (r) { e.preventDefault(); state.bnr = Number(r.getAttribute('data-bnr')); state.bnrSet = true; save(); renderAll(); }
+  });
+  document.getElementById('filters').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-filter]');
+    if (b) { state.filter = b.getAttribute('data-filter'); renderFilters(); renderOptions(); }
+  });
+  document.getElementById('opt-list').addEventListener('click', function (e) {
+    var el = e.target.closest('[data-act]');
+    if (!el) return;
+    var o = byId[el.getAttribute('data-id')];
+    var act = el.getAttribute('data-act');
+    if (act === 'inc') setQty(o, qtyOf(o) + 1);
+    else if (act === 'dec') setQty(o, qtyOf(o) - 1);
+  });
+  document.getElementById('opt-list').addEventListener('change', function (e) {
+    var el = e.target.closest('[data-act="toggle"]');
+    if (!el) return;
+    var o = byId[el.getAttribute('data-id')];
+    setQty(o, el.checked ? 1 : 0);
+  });
+  document.getElementById('btn-rec').addEventListener('click', chooseRecommended);
+  var clearArmed = false, clearTimer = null;
+  document.getElementById('btn-clear').addEventListener('click', function () {
+    var msg = document.getElementById('clear-msg');
+    if (!clearArmed) {
+      clearArmed = true; msg.hidden = false;
+      clearTimer = setTimeout(function () { clearArmed = false; msg.hidden = true; }, 5000);
+      return;
+    }
+    clearTimeout(clearTimer); clearArmed = false; msg.hidden = true;
+    state.qty = {}; save(); renderAll();
+  });
+  document.getElementById('sum-card').addEventListener('click', function (e) {
+    if (e.target.id === 'btn-go-opt') { showTab('opties'); return; }
+    if (e.target.id !== 'btn-copy') return;
+    var h = house();
+    var lines = ['Liviahof type ' + h[1] + ', bouwnummer ' + h[0], 'Koopprijs: ' + eur(h[2]), ''];
+    selected().forEach(function (o) {
+      var n = qtyOf(o);
+      lines.push((n > 1 ? n + ' x ' : '') + 'Optie ' + o.id + ' ' + o.t + ': ' + eur(n * o.p));
+    });
+    lines.push('', 'Opties totaal: ' + eur(optionsTotal()), 'Totaal: ' + eur(h[2] + optionsTotal()));
+    var text = lines.join('\n');
+    var msg = document.getElementById('copy-msg');
+    function done(ok) { msg.hidden = false; msg.textContent = ok ? 'Gekopieerd.' : 'Kopiëren lukte niet. Selecteer de lijst hierboven en kopieer handmatig.'; }
+    try {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); });
+    } catch (err) { done(false); }
+  });
+
+  load();
+  renderAll();
+  var hash = (location.hash || '').replace('#', '');
+  if (TABS.indexOf(hash) >= 0) showTab(hash);
+})();
+</script>
+</body>
+</html>
